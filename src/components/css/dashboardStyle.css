@@ -1,0 +1,173 @@
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.slogo {
+
+    margin-left: 44px;
+    width: 22%;
+}
+
+
+
+*,
+::before,
+::after {
+    box-sizing: border-box
+}
+
+
+
+
+
+.l-navbar {
+    position: fixed;
+    top: 0;
+    left: -30%;
+    width: var(--nav-width);
+    height: 100vh;
+    background-color: var(--first-color);
+    padding: .5rem 1rem 0 0;
+    transition: .5s;
+    z-index: var(--z-fixed)
+}
+
+
+a{
+    text-decoration: none;
+    color: var(--first-color-light);
+}
+a:hover{
+    text-decoration: none;
+    color: var(--white-color)
+}
+.nav_logo,
+.nav_link {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    align-items: center;
+    column-gap: 1rem;
+    padding: .5rem 0 .5rem 1.5rem;
+
+}
+
+.nav_logo {
+    margin-bottom: 2rem
+}
+
+.nav_logo-icon {
+    font-size: 1.25rem;
+    color: var(--white-color)
+}
+
+.nav_logo-name {
+    color: var(--white-color);
+    font-weight: 700
+}
+
+.nav_link {
+    position: relative;
+    color: var(--first-color-light);
+    margin-bottom: 1.5rem;
+    transition: .3s
+}
+
+.nav_link:hover {
+    color: var(--white-color)
+}
+
+.nav_icon {
+    font-size: 1.25rem
+}
+
+
+
+.header {
+    background-color: rgba(212, 250, 250, 1);
+}
+
+.active {
+    color: var(--white-color)
+}
+
+
+
+.username {
+    position: absolute;
+    left: 105rem;
+    margin-top: 1rem;
+    display: inline;
+
+}
+
+.height-100 {
+    height: 100vh
+}
+
+.hd {
+    padding-top: 3rem;
+}
+
+.avatr {
+    position: relative;
+    left: 40.7rem;
+    display: inline;
+}
+
+.pharmaname {
+    position: relative;
+    display: inline;
+    margin-left: 2rem;
+    padding-top: 5rem;
+
+    font-weight: bold;
+}
+
+.pharmaloc {
+    margin: 0;
+    display: inline;
+
+}
+
+.licon {
+    color: rgba(244, 102, 102, 1);
+    padding-right: 5px;
+}
+
+.location {
+    padding-left: 5rem;
+}
+
+@media screen and (min-width: 768px) {
+
+
+
+    .l-navbar {
+        left: 0;
+        padding: 1rem 1rem 0 0
+    }
+
+
+
+
+}
+
+.mainboard {
+    background-color: rgba(212, 250, 250, 1);
+    height: 100vh;
+}

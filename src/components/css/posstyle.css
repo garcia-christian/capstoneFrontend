@@ -1,0 +1,138 @@
+.pos{
+    height: 65vh;
+    padding-top: 4rem;
+}
+.dataResult .dataItem {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    color: black;
+  }
+  .dataResult {
+    margin-top: 5px;
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+.sd{
+    height: 100rem;
+}
+.height{
+    height: 100vh;
+   }
+   
+   .search {
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    padding-top: 6px;
+   
+}
+
+.search-input {
+    color: white;
+    border: 0;
+    outline: 0;
+    background: none;
+    width: 0;
+
+    caret-color: transparent;
+    line-height: 20px;
+    transition: width 0.4s linear
+}
+
+.search .search-input {
+  
+    width: 100%;
+    caret-color: black;
+    font-size: 23px;
+    font-weight: 300;
+    color: black;
+    transition: width 0.4s linear
+}
+
+.search-icon {
+    height: 34px;
+    width: 34px;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: rgb(74, 228, 228);
+    font-size: 10px;
+    bottom: 30px;
+    position: relative;
+    border-radius: 5px
+}
+.dropdown-toggle,.dropdown-menu {
+    width: 100%;
+}
+.search-icon:hover {
+    color: #fff !important
+}
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar
+}
+
+.table,
+.jsgrid .jsgrid-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent
+}
+
+.table thead th,
+.jsgrid .jsgrid-table thead th {
+    border-top: 0;
+    border-bottom-width: 1px;
+    font-weight: 500;
+    font-size: .875rem;
+    text-transform: uppercase
+}
+.num{
+    
+    margin-right:-10rem
+}
+.del:hover{
+    cursor:pointer;
+}
+.table td,
+.jsgrid .jsgrid-table td {
+    font-size: 0.875rem;
+    padding: .875rem 0.9375rem
+}
+.res1{
+     margin-top: 90px
+}
+.res2{
+    border: 1px solid black;
+}
+.res3{
+    border: 1px solid black;
+}
+.res4{
+    font-size: 30px;
+}
+.res5{
+    margin-top:  -2px;
+    border: 1px solid black;
+}
+.container{
+    font-size: 12pt;
+}
+td{
+ max-width: 100px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
