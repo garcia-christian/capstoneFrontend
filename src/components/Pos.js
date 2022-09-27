@@ -85,7 +85,6 @@ const Pos = () => {
 
         const res = discounts.filter(des => des.discount_id == value.discount_id)
         setDiscount(res)
-        console.log(discount);
 
     }
     const handleFilter = (event) => {

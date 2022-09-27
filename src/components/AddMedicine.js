@@ -48,7 +48,7 @@ const AddMedicine = () => {
 
     return (
         <div>
-            <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal fade" id="addModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -99,12 +99,12 @@ const AddMedicine = () => {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Confirm</button>
+                            <button class="btn btn-primary" data-bs-target="#addModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Confirm</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal fade" id="addModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -120,7 +120,7 @@ const AddMedicine = () => {
                     </div>
                 </div>
             </div>
-            <a class="btn btn-primary ml-4 mb-2" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Register Medicine</a>
+            <a class="btn btn-primary ml-4 mb-2" data-bs-toggle="modal" href="#addModalToggle" role="button">Register Medicine</a>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useContext} from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { PharmaContext } from "../context/PharmaContext"
 import "./css/modal.css"
 const Sellmodal = ({ Subtotal, Total, discount, Cart }) => {
@@ -46,7 +46,8 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart }) => {
 
             const storageBody = {
                 id: value[0].med_id,
-                qty: value.quantity
+                qty: value.quantity,
+                pharmacy: pharma.pharmacy_id
             }
             const store = await fetch("http://localhost:5000/medicine/deduct-qty", {
                 method: "PUT",
