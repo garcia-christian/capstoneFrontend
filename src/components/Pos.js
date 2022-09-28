@@ -224,7 +224,7 @@ const Pos = () => {
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-sm-6 py-2 h-100 "  >
+                    <div class="col-xl-3 col-sm-6 py-2 h-100">
                         <div class="card bg-black text-black h-100">
                             <div class="card-body bg-white h-100">
                                 <div class="rotate">

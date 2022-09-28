@@ -1,0 +1,9 @@
+.sales {
+    height: 95vh;
+    padding-top: 4rem;
+}
+
+.hlimit {
+    max-height: 610px;
+    overflow-y: scroll;
+}

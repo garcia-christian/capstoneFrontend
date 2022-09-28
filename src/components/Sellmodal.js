@@ -193,7 +193,7 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart }) => {
                         </div>
                     </div>
                 </div>
-                <a class="btn btn-primary d-flex justify-content-center w-100 mt-5" data-bs-toggle="modal" href="#exampleModalToggle" role="button"> Check out</a>
+                <a class="btn btn-primary d-flex justify-content-center w-100 mt-4" data-bs-toggle="modal" href="#exampleModalToggle" role="button"> Check out</a>
             </div>
         </Fragment>
     )

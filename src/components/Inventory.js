@@ -8,9 +8,9 @@ const Inventory = () => {
     return (
         <Fragment>
             
-            <div className="pos">
+            <div className="inv">
            
-                <div class="d-flex justify-content-center h-100 ">
+                <div class="d-flex justify-content-center h-100">
                     
                     <div class="col-xl-11 col-sm-6 py-2 h-100 ">
 

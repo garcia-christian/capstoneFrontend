@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Fragment, useContext } from "react";
 import { PharmaContext } from "../context/PharmaContext"
 import "./css/homestyle.css"
+import api from "../services/api";
 const Home = () => {
     const [pharmacy, setPharmacy] = useState([]);
     const [admin, setAdmin] = useState([]);
@@ -30,20 +31,26 @@ const Home = () => {
 
 
     const getData = async () => {
-        
-        if(pharma){
+        var date = new Date();
+        var month = date.getMonth() + 1;
+        if (pharma) {
             console.log(pharma);
             try {
                 const respo = await fetch("http://localhost:5000/sell/this-month-report/" + pharma.pharmacy_id)
                 const jData = await respo.json();
-                setCurrentMonth(jData[0])
                 console.log(jData);
+                jData.map((value, index) => {
+                    if (month == value.month) {
+                        setCurrentMonth(value)
+                    }
+                })
+
             } catch (err) {
                 console.error(err.message);
             }
         }
     }
-   
+
     useEffect(() => {
         getData()
 
