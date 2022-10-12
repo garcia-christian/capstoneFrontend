@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useState, useContext} from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { PharmaContext } from "../context/PharmaContext"
-
+import toast, { Toaster } from 'react-hot-toast';
 import "./css/posstyle.css"
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
@@ -17,6 +17,20 @@ const Pos = () => {
     const [cart, setCart] = useState([])
     const [Subtotal, setSubtotal] = useState(0)
     const [Total, setTotal] = useState(0)
+
+
+    const allClear = () => {
+        getData();
+        setTotal(0);
+        setSubtotal(0);
+        setCart([]);
+        setWordEntered("");
+        setFilteredData([])
+        setDiscount([])
+        setsearchCardSize("h-0")
+    }
+
+
 
     const calculator = () => {
         let totalinit = 0;
@@ -36,9 +50,9 @@ const Pos = () => {
 
     const getData = async () => {
         try {
-            const respo = await fetch("http://localhost:5000/medicine/get-local-med/"+ pharma.pharmacy_id)
+            const respo = await fetch("http://localhost:5000/medicine/get-local-med/" + pharma.pharmacy_id)
             const jData = await respo.json();
-            const respo1 = await fetch("http://localhost:5000/sell/discount/"+ pharma.pharmacy_id)
+            const respo1 = await fetch("http://localhost:5000/sell/discount/" + pharma.pharmacy_id)
             const jData1 = await respo1.json();
             setMeds(jData)
             setDiscounts(jData1)
@@ -54,27 +68,36 @@ const Pos = () => {
         let i = 0
 
         const res = meds.filter(med => med.med_id == id)
-        cart.map((value, index) => {
-            if (value[0].med_id === id) {
-                qty++
-                i = index
 
+        if (res[0].med_qty != 0) {
+            cart.map((value, index) => {
+                if (value[0].med_id === id) {
+                    qty++
+                    i = index
+
+                }
+            })
+
+            if (qty === 1) {
+                res.quantity = qty
+                const newData = [...cart, res]
+                setCart(newData)
+
+                console.log(newData);
+
+            } else {
+                const newData = [...cart]
+                if (newData[i].quantity < newData[i][0].med_qty) {
+                    newData[i].quantity++
+                    setCart(newData)
+                } else {
+                    toast.error('Max quantity reached')
+                }
             }
-        })
 
-        if (qty === 1) {
-            res.quantity = qty
-            const newData = [...cart, res]
-            setCart(newData)
-
-            console.log(newData);
 
         } else {
-            const newData = [...cart]
-            newData[i].quantity++
-
-            setCart(newData)
-
+            toast.error('Not Available')
         }
 
         console.log(cart.length);
@@ -95,11 +118,15 @@ const Pos = () => {
             return word.toLowerCase().includes(searchWord.toLowerCase());
         });
 
-        if (searchWord === "") {
+        if (searchWord == "") {
             setFilteredData([]);
             setsearchCardSize("h-0")
 
-        } else {
+        }
+        else if (newFilter.length == 0) {
+            setsearchCardSize("h-0")
+        }
+        else {
             setFilteredData(newFilter);
             setsearchCardSize("h-50")
         }
@@ -107,16 +134,22 @@ const Pos = () => {
     const onQChange = (e, value) => {
         const newData = [...cart]
         const id = newData[e][0].med_id
+        const qty = parseInt(newData[e][0].med_qty)
         console.log(newData[e]);
-        if (value == 0) {
-            console.log(0);
+        console.log('val= ' + value);
+        if (value > qty) {
+            value = qty
+            toast.error('Max quantity reached')
+        }
+        if (value == '0' || value < 0) {
             setCart(newData.filter(data => data[0].med_id !== id))
-
-
         } else {
+
             newData[e].quantity = value
             setCart(newData)
+
         }
+
 
     };
     const deleteCart = (e) => {
@@ -131,7 +164,7 @@ const Pos = () => {
 
 
             if (filteredData.length !== 0) {
-                console.log('omn');
+
                 filteredData.map((value, index) => {
                     if (index == 0) {
                         selectData(value.med_id)
@@ -166,10 +199,11 @@ const Pos = () => {
 
                                                     {filteredData.slice(0, 15).map((value, index) => {
                                                         return (
-                                                            <tr key={index} onClick={() => selectData(value.med_id)}>
+                                                            <tr key={index} onClick={() => selectData(value.med_id)} >
                                                                 <td>{value.global_brand_name}</td>
                                                                 <td>{value.global_generic_name}</td>
                                                                 <td>₱{value.med_price}</td>
+                                                                <td>{value.med_qty} pcs</td>
                                                             </tr>
                                                         );
                                                     })}
@@ -303,12 +337,12 @@ const Pos = () => {
                                                 <Dropdown.Item onClick={() => selectDiscount(value)} as="button" >{value.discount_desc}</Dropdown.Item>
 
                                             ))}
-
+                                            <Dropdown.Item onClick={() => selectDiscount([])} as="button" >None</Dropdown.Item>
 
                                         </DropdownButton>
 
 
-                                        <Sellmodal Subtotal={Subtotal} Total={Total} discount={discount} Cart={cart} />
+                                        <Sellmodal Subtotal={Subtotal} Total={Total} discount={discount} Cart={cart} allClear={allClear} />
                                     </div>
 
 

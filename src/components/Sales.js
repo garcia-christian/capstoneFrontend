@@ -8,11 +8,18 @@ const Sales = () => {
     const [data, setData] = useState([])
     const [labels, setLabels] = useState([])
     const [cdata, setCdata] = useState([])
+    const [ldata, setLdata] = useState([])
     const [today, setToday] = useState()
     const [currentMonth, setCurrentMonth] = useState([]);
     const [lastMonth, setLastMonth] = useState([]);
-    function daysInMonth(month, year) { // Use 1 for January, 2 for February, etc.
-        return new Date(year, month, 0).getDate();
+    const getDaysInCurrentMonth = () => {
+        const date = new Date();
+
+        return new Date(
+            date.getFullYear(),
+            date.getMonth() + 1,
+            0
+        ).getDate();
     }
     const loadData = async () => {
         try {
@@ -26,6 +33,7 @@ const Sales = () => {
             setData(jData)
             const days = []
             const dta = []
+            const Ldta = []
             var date = new Date();
             var dy = date.getDate();
             var currmonth = date.getMonth() + 1;
@@ -41,29 +49,41 @@ const Sales = () => {
 
             await jData1.map((value, index) => {
                 if (dy == value.day) {
-                    console.log('passed');
                     setToday(value)
                 }
             })
             console.log(currmonth);
-            for (let i = 1; i < daysInMonth(2021, 7); i++) {
+
+            for (let i = 1; i < getDaysInCurrentMonth() + 1; i++) {
                 days.push(i)
                 let o = 0
+                let l = 0
                 await jData1.map((value, index) => {
                     if (value.day == i && value.month == currmonth) {
-                        console.log(value.month);
                         dta.push(value.revenue)
                         o = 1
+                    }
+                    if (value.day == i && value.month == lastmonth) {
+                        Ldta.push(value.revenue)
+                        l = 1
                     }
                 })
                 if (o !== 1) {
                     dta.push(0)
+
+
+                }
+                if (l !== 1) {
+
+                    Ldta.push(0)
+
                 }
             }
 
             setLabels(days)
             setCdata(dta)
-            console.log(days);
+            setLdata(Ldta)
+            console.log(Ldta);
             console.log(dta);
         } catch (err) {
             console.error(err.message);
@@ -130,7 +150,7 @@ const Sales = () => {
 
                                 <div class="row d-flex justify-content-center mt-5 hlimit">
 
-                                    <SellCharts lbl={labels} dta={cdata} />
+                                    <SellCharts lbl={labels} dta={cdata} ldta={ldata} />
 
                                     <div class="row mb-3 d-flex justify-content-center">
                                         <div class="table-responsive">

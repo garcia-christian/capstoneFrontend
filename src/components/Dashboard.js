@@ -4,7 +4,7 @@ import dash from "./css/dashboardstyle.module.scss"
 import logo from './images/blue.png'
 import Avatar from 'react-avatar';
 import { PharmaContext } from "../context/PharmaContext"
-
+import toast, { Toaster } from 'react-hot-toast';
 import { NavLink, Outlet } from "react-router-dom";
 
 
@@ -59,6 +59,15 @@ const Dashboard = ({ setAuth }) => {
     setIsAuthenticated(false)
     setAuth(false);
     setPharma(null)
+    toast('Logged Out Successfully',
+      {
+        style: {
+          borderRadius: '10px',
+          background: '#ed3450',
+          color: '#fff',
+        },
+      }
+    );
   }
 
   useEffect(() => {

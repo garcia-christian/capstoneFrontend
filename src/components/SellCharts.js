@@ -1,5 +1,6 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2';
+
 import {
     Chart as ChartJS,
     LineElement,
@@ -15,7 +16,7 @@ ChartJS.register(
     PointElement
 )
 
-const SellCharts = ({lbl,dta}) => {
+const SellCharts = ({ lbl, dta, ldta }) => {
     const data = {
         labels: lbl,
         datasets: [{
@@ -25,11 +26,21 @@ const SellCharts = ({lbl,dta}) => {
             pointBorderColor: 'transparent',
             pointBorderWidth: 4,
             tension: .2
-        }]
+        }, {
+            data: ldta,
+            backgroundColor: 'transparent',
+            borderColor: '#FAA0A0',
+            pointBorderColor: 'transparent',
+            pointBorderWidth: 4,
+            tension: .2
+        }
+
+        ]
     };
     const options = {
+        maintainAspectRatio: false,
         plugins: {
-            legend: false
+
         },
         scales: {
             x: {
@@ -38,8 +49,8 @@ const SellCharts = ({lbl,dta}) => {
                 }
             },
             y: {
-                min: Math.min(...dta),
-                max: Math.max(...dta)+100,
+                min: 5,
+                max: Math.round(Math.max(...dta) + 100, 2),
                 ticks: {
                     stepSize: 100,
                     callback: (value) => value + ""
@@ -48,13 +59,16 @@ const SellCharts = ({lbl,dta}) => {
                     borderDash: [10]
                 }
             }
+
         }
 
     }
 
     return (
-        <div style={{ width: '900px', height: '500px'}} >
-            <Line data={data} options={options}></Line>
+
+        <div style={{ width: '1200px', height: '500px' }} >
+
+            <Line data={data} options={options} title="ssdsdsd"></Line>
 
         </div>
 

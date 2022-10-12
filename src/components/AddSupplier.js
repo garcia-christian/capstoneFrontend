@@ -28,7 +28,7 @@ const AddSupplier = () => {
     }
     return (
         <div>
-            <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal fade" id="addSuppToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -68,12 +68,12 @@ const AddSupplier = () => {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary"  data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Confirm</button>
+                            <button class="btn btn-primary" data-bs-target="#addSuppToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Confirm</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+            <div class="modal fade" id="addSuppToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -84,12 +84,12 @@ const AddSupplier = () => {
                             Confirm Added Medicine
                         </div>
                         <div class="modal-footer">
-                            <button onClick={submit} class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-dismiss="modal">Yes</button>
+                            <button onClick={submit} class="btn btn-primary" data-bs-target="#addSuppToggle" data-bs-dismiss="modal">Yes</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <a class="btn btn-primary ml-4 mb-2" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Add Supplier</a>
+            <a class="btn btn-primary ml-4 mb-2" data-bs-toggle="modal" href="#addSuppToggle" role="button">Add Supplier</a>
         </div>
     )
 }

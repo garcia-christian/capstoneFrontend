@@ -37,3 +37,11 @@ select {
   margin-top: -17px;
 }
 
+.numnum::-webkit-inner-spin-button, 
+.numnum::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+}
+
+.numnum {
+  -moz-appearance: textfield;
+}          

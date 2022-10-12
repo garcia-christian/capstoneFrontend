@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment, useContext } from "react";
+import React, { useEffect, useState, Fragment, useContext, useRef } from "react";
 import { PharmaContext } from "../context/PharmaContext"
 import "./css/purchasestyle.css"
 import Form from "react-bootstrap/Form";
@@ -6,19 +6,25 @@ import Select from 'react-select'
 import ConfimationModal from "./ConfimationModal";
 import AddMedicine from "./AddMedicine";
 import AddSupplier from "./AddSupplier";
+import toast, { Toaster } from 'react-hot-toast';
 const Purchase = () => {
-
+    const refSupp = useRef(null);
+    const refMed = useRef(null);
+    const refQty = useRef(null);
+    const refPrice = useRef(null);
+    const refExp = useRef(null);
+    const refMan = useRef(null);
     const { pharma, setPharma } = useContext(PharmaContext);
     const [suppliers, setSuppliers] = useState([])
-    const [supplier, setSupplier] = useState([])
+    const [supplier, setSupplier] = useState(null)
     const [meds, setMeds] = useState([])
     const [purhcased, setPurchased] = useState([])
-    const [med, setMed] = useState([])
+    const [med, setMed] = useState(null)
     const [quantity, setQuantity] = useState()
     const [listing_price, setlisting_price] = useState()
     const [retail_price, setRetail_price] = useState()
-    const [date_exp, setDate_exp] = useState(new Date())
-    const [date_man, setDate_man] = useState(new Date())
+    const [date_exp, setDate_exp] = useState()
+    const [date_man, setDate_man] = useState()
     const [retail_priceTotal, setRetail_priceTotal] = useState(0)
     const [listing_priceTotal, setListing_priceTotal] = useState(0)
     const [emptylist, setEmptylist] = useState(false)
@@ -26,9 +32,9 @@ const Purchase = () => {
 
     const getData = async () => {
         try {
-            const respo = await fetch("http://localhost:5000/medicine/get-local-med/"+pharma.pharmacy_id)
+            const respo = await fetch("http://localhost:5000/medicine/get-local-med/" + pharma.pharmacy_id)
             const jData = await respo.json();
-            const respo1 = await fetch("http://localhost:5000/purchase/get-suppliers/"+pharma.pharmacy_id)
+            const respo1 = await fetch("http://localhost:5000/purchase/get-suppliers/" + pharma.pharmacy_id)
             const jData1 = await respo1.json();
             setMeds(jData)
             setSuppliers(jData1)
@@ -45,79 +51,110 @@ const Purchase = () => {
     }
 
     const saveDatabase = async () => {
+        const toastId = toast.loading('Loading...');
+        try {
 
+            const pInvoiceBody = {
+                admin: pharma.admin,
+                pharmacy: pharma.pharmacy_id,
+                supplier: supplier.supplier_id,
+                total_price: listing_priceTotal,
 
-        const pInvoiceBody = {
-            admin: pharma.admin, pharmacy: pharma.pharmacy_id,
-            supplier: supplier.supplier_id,
-            total_price: listing_priceTotal,
-
-        }
-        const purchaseInvoice = await fetch("http://localhost:5000/purchase/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(pInvoiceBody)
-        });
-        const pInvoice_res = await purchaseInvoice.json();
-
-
-        purhcased.map(async (value, key) => {
-
-
-
-            const storageBody = {
-                id: value.med_id,
-                qty: value.quantity
             }
-            const store = await fetch("http://localhost:5000/medicine/add-qty", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(storageBody)
-            });
-            const storage_res = await store.json();
-
-
-            const onInvoiceBody = {
-                med_id: value.med_id,
-                purchase_invoice: pInvoice_res.rows[0].purchaseInvoice_id,
-                quantity: value.quantity,
-                listing_price: value.listing_price,
-                retail_price: value.retail_price,
-                date_exp: value.date_exp,
-                date_man: value.date_man,
-            }
-            const onInvoice = await fetch("http://localhost:5000/purchase/save", {
+            const purchaseInvoice = await fetch("http://localhost:5000/purchase/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(onInvoiceBody)
+                body: JSON.stringify(pInvoiceBody)
             });
+            const pInvoice_res = await purchaseInvoice.json();
+            console.log(pInvoice_res);
 
-        })
-        setPurchased([])
-        setSupplier(null)
-        setRetail_priceTotal(0)
-        setListing_priceTotal(0)
+            purhcased.map(async (value, key) => {
+
+                const storageBody = {
+                    id: value.med_id,
+                    qty: value.quantity
+                }
+                const store = await fetch("http://localhost:5000/medicine/add-qty", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(storageBody)
+                });
+                const storage_res = await store.json();
+                console.log(122);
+
+                const onInvoiceBody = {
+                    med_id: value.med_id,
+                    purchase_invoice: pInvoice_res.rows[0].purchaseInvoice_id,
+                    quantity: value.quantity,
+                    listing_price: value.listing_price,
+                    retail_price: value.retail_price,
+                    date_exp: value.date_exp,
+                    date_man: value.date_man,
+                }
+                const onInvoice = await fetch("http://localhost:5000/purchase/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(onInvoiceBody)
+                });
+
+            })
+            toast.dismiss(toastId);
+            toast.success('Transaction Saved')
+            setPurchased([])
+            setSupplier(null)
+            setRetail_priceTotal(0)
+            setListing_priceTotal(0)
+        } catch (error) {
+            console.error(error.message)
+            toast.dismiss(toastId);
+            toast.error('Saving Failed')
+        }
 
     }
     const confirmAdd = async () => {
-        let total_pr = listing_price * quantity
-        const addedData = {
-            med_id: med.med_id,
-            brand_name: med.global_brand_name,
-            generic_name: med.global_generic_name,
-            quantity: quantity,
-            supplier_id: supplier.supplier_id,
-            company: supplier.companyName,
-            listing_price: listing_price,
-            retail_price: retail_price,
-            date_exp: date_exp,
-            date_man: date_man,
-            total_price: total_pr,
+
+        if (!supplier) {
+            toast.error('Select Supplier')
+            refSupp.current.focus();
+        } else if (!med) {
+            toast.error('Select Medicine')
+            refMed.current.focus();
+        } else if (!quantity) {
+            toast.error('Quantity cannot be empty')
+            refQty.current.focus();
+        } else if (!listing_price) {
+            toast.error('Listing price cannot be empty')
+            refPrice.current.focus();
+        } else if (!retail_price) {
+            toast.error('LOL')
+        } else if (!date_exp) {
+            toast.error('Please set the Expiration Date')
+            refExp.current.focus();
+        } else if (!date_man) {
+            toast.error('Please set the Manufacture Date')
+            refMan.current.focus();
+        } else {
+            let total_pr = listing_price * quantity
+            const addedData = {
+                med_id: med.med_id,
+                brand_name: med.global_brand_name,
+                generic_name: med.global_generic_name,
+                quantity: quantity,
+                supplier_id: supplier.supplier_id,
+                company: supplier.companyName,
+                listing_price: listing_price,
+                retail_price: retail_price,
+                date_exp: date_exp,
+                date_man: date_man,
+                total_price: total_pr,
+            }
+            const newData = [...purhcased, addedData]
+            setPurchased(newData)
+            console.log(newData);
+            clearData()
         }
 
-        const newData = [...purhcased, addedData]
-        setPurchased(newData)
-        clearData()
 
 
     }
@@ -154,7 +191,7 @@ const Purchase = () => {
 
 
     useEffect(() => {
-        if(pharma){
+        if (pharma) {
             getData()
         }
     }, [pharma])
@@ -176,6 +213,7 @@ const Purchase = () => {
                                     <h6>Supplier</h6>
                                     <div class="form-row">
                                         <Select
+                                            ref={refSupp}
                                             isDisabled={emptylist}
                                             value={supplier}
                                             isClearable={true}
@@ -193,6 +231,7 @@ const Purchase = () => {
                                         <div class="col-5">
 
                                             <Select
+                                                ref={refMed}
                                                 value={med}
                                                 isClearable={true}
                                                 defaultOptions={false}
@@ -204,13 +243,13 @@ const Purchase = () => {
 
                                         </div>
                                         <div class="col-1">
-                                            <input type="text" onChange={(e) => setQuantity(e.target.value)} value={quantity} class="form-control" placeholder="Qty" />
+                                            <input ref={refQty} type="number" pattern="[0-9]*" onChange={(e) => setQuantity(e.target.value)} value={quantity} class="form-control numnum" placeholder="Qty" />
                                         </div>
                                         <div class="col">
-                                            <input type="text" onChange={(e) => setlisting_price(e.target.value)} value={listing_price} class="form-control" placeholder="Listing Price" />
+                                            <input ref={refPrice} type="number" pattern="[0-9]*" onChange={(e) => setlisting_price(e.target.value)} value={listing_price} class="form-control numnum" placeholder="Listing Price" />
                                         </div>
                                         <div class="col">
-                                            <input type="text" disabled={true} value={retail_price} class="form-control" placeholder="Retail Price" />
+                                            <input type="text" disabled={true} value={med ? `Retail Price: ₱${retail_price}` : ''} class="form-control" placeholder="Retail Price" />
                                         </div>
                                     </div>
 
@@ -218,11 +257,11 @@ const Purchase = () => {
                                     <div class="form-row " id="exp">
                                         <div className="col-4">
                                             <h6 class="mt-2">Exp Date</h6>
-                                            <Form.Control value={date_exp} onChange={(e) => setDate_exp(e.target.value)} type="date"></Form.Control>
+                                            <Form.Control ref={refExp} value={date_exp} onChange={(e) => setDate_exp(e.target.value)} type="date"></Form.Control>
                                         </div>
                                         <div id="manf" className="col-4">
                                             <h6 class="mt-2">Date Manufactured</h6>
-                                            <Form.Control value={date_man} onChange={(e) => setDate_man(e.target.value)} type="date"></Form.Control>
+                                            <Form.Control ref={refMan} value={date_man} onChange={(e) => setDate_man(e.target.value)} type="date"></Form.Control>
                                         </div>
                                         <div className="col-1 ">
 
@@ -319,6 +358,7 @@ const Purchase = () => {
                                 button={'Save Purchased'}
                                 btnstyle={'btn btn-primary mr-4 ml-4 mb-2 '}
                                 method={saveDatabase}
+                                Purchased={purhcased}
                             />
 
                         </div>
@@ -328,7 +368,7 @@ const Purchase = () => {
                                 <div class="rotate">
                                 </div>
                                 <div class="container">
-                                <h6>Supplier List</h6>
+                                    <h6>Supplier List</h6>
                                     <hr />
                                     <div class="table-responsive tblimit">
                                         <table class="table table-hover  ">
@@ -336,7 +376,7 @@ const Purchase = () => {
                                             <tbody>
                                                 {suppliers.map((value, index) => (
                                                     <tr >
-                                                         <td>{value.companyName}</td>
+                                                        <td>{value.companyName}</td>
 
                                                     </tr>
                                                 ))}
@@ -346,7 +386,7 @@ const Purchase = () => {
                                 </div>
 
                             </div>
-                            <AddSupplier/>
+                            <AddSupplier />
                         </div>
 
                         <div class="card bg-black text-black h-100 mt-4">
@@ -373,7 +413,7 @@ const Purchase = () => {
                                 </div>
 
                             </div>
-                            <AddMedicine />
+                            <AddMedicine getData={getData} />
 
                         </div>
                     </div>

@@ -1,16 +1,18 @@
-import React, { useEffect, useState, Fragment, useContext } from "react";
+import React, { useEffect, useState, Fragment, useContext, useRef } from "react";
 import { PharmaContext } from "../context/PharmaContext"
 import AsyncSelect from 'react-select/async'
 import { useNavigate } from "react-router-dom";
-
-const AddMedicine = () => {
+import toast, { Toaster } from 'react-hot-toast';
+const AddMedicine = ({ getData }) => {
+    const refMed = useRef(null);
+    const refPr = useRef(null);
     const { pharma, setPharma } = useContext(PharmaContext);
     const [notes, setNotes] = useState('');
     const [storage, setStorage] = useState('');
     const [price, setPrice] = useState(0);
     const [inputValue, setinputValue] = useState('');
     const [selectedValue, setSelectedValue] = useState(null)
-    const navigate = useNavigate();
+    const [href, setHref] = useState('');
     const fetchData = () => {
         return fetch("http://localhost:5000/medicine/get-global-med/" + inputValue).then(res => {
 
@@ -28,24 +30,80 @@ const AddMedicine = () => {
     }
 
     const submit = async () => {
-        const medbody = {
-            pharmacy: pharma.pharmacy_id,
-            global_med: selectedValue.global_med_id,
-            price: price,
-            storage: storage,
-            notes: notes,
-            med_qty: 0
-        }
-        const addlocalMed = await fetch("http://localhost:5000/medicine/add-local", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(medbody)
-        });
-        const res = await addlocalMed.json();
-        console.log(res);
-        navigate(0);
-    }
+        const toastId = toast.loading('Loading...');
 
+
+
+        try {
+            const medbody = {
+                pharmacy: pharma.pharmacy_id,
+                global_med: selectedValue.global_med_id,
+                price: price,
+                storage: storage,
+                notes: notes,
+                med_qty: 0
+            }
+            const addlocalMed = await fetch("http://localhost:5000/medicine/add-local", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(medbody)
+            });
+            const res = await addlocalMed.json();
+            console.log(addlocalMed.status);
+            if (addlocalMed.status == 200) {
+                setHref('modal')
+                getData()
+                setNotes('')
+                setStorage('')
+                setPrice(0)
+                setinputValue('')
+                setSelectedValue(null)
+                toast.dismiss(toastId);
+                toast.success('Added')
+            } else {
+                setHref('')
+                getData()
+                setNotes('')
+                setStorage('')
+                setPrice(0)
+                setinputValue('')
+                setSelectedValue(null)
+                toast.dismiss(toastId);
+                toast.error(res)
+            }
+        } catch (error) {
+            setHref('')
+            console.error(error.message)
+            toast.dismiss(toastId);
+            toast.error('Saving Failed')
+        }
+
+
+    }
+    const checkSubmit = () => {
+        if (!selectedValue) {
+            toast.error('Select a medicine')
+            refMed.current.focus();
+            setHref('')
+        }
+        else if (!price) {
+            setHref('')
+            toast.error('Price cannot be empty')
+            refPr.current.focus();
+        } else {
+            setHref('modal')
+        }
+    }
+    useEffect(() => {
+        if (!selectedValue) {
+            setHref('')
+        }
+        else if (!price) {
+            setHref('')
+        } else {
+            setHref('modal')
+        }
+    }, [selectedValue, price])
     return (
         <div>
             <div class="modal fade" id="addModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -61,6 +119,7 @@ const AddMedicine = () => {
                             <div class="form-row ">
                                 <div class="col-8">
                                     <AsyncSelect
+                                        ref={refMed}
                                         cacheOptions
                                         defaultOptions
                                         value={selectedValue}
@@ -82,7 +141,7 @@ const AddMedicine = () => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputGroup-sizing-default">₱</span>
                                         </div>
-                                        <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder='Set med Price' class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
+                                        <input type="text" ref={refPr} value={price} onChange={(e) => setPrice(e.target.value)} placeholder='Set med Price' class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +158,7 @@ const AddMedicine = () => {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary" data-bs-target="#addModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Confirm</button>
+                            <button class="btn btn-primary" data-bs-target="#addModalToggle2" onClick={checkSubmit} data-bs-toggle={href} data-bs-dismiss={href}>Confirm</button>
                         </div>
                     </div>
                 </div>
