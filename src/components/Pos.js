@@ -5,8 +5,10 @@ import "./css/posstyle.css"
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Sellmodal from "./Sellmodal";
+import { urlApi } from "../context/urlAPI";
 
 const Pos = () => {
+    const { BASEURL } = useContext(urlApi);
     const { pharma, setPharma } = useContext(PharmaContext);
     const [meds, setMeds] = useState([]);
     const [discounts, setDiscounts] = useState([]);
@@ -50,9 +52,9 @@ const Pos = () => {
 
     const getData = async () => {
         try {
-            const respo = await fetch("http://localhost:5000/medicine/get-local-med/" + pharma.pharmacy_id)
+            const respo = await fetch(BASEURL+"/medicine/get-local-med/" + pharma.pharmacy_id)
             const jData = await respo.json();
-            const respo1 = await fetch("http://localhost:5000/sell/discount/" + pharma.pharmacy_id)
+            const respo1 = await fetch(BASEURL+"/sell/discount/" + pharma.pharmacy_id)
             const jData1 = await respo1.json();
             setMeds(jData)
             setDiscounts(jData1)
@@ -267,7 +269,7 @@ const Pos = () => {
 
                                     <div class="row">
                                         <ul class="list-unstyled">
-                                            <li class="text-muted mt-1"><span class="text-black">Invoice</span> #12345</li>
+                                            
                                             <li class="text-black mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
                                         </ul>
                                         <hr />

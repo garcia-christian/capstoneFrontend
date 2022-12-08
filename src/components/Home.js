@@ -2,46 +2,44 @@ import React, { useEffect, useState, Fragment, useContext } from "react";
 import { PharmaContext } from "../context/PharmaContext"
 import "./css/homestyle.css"
 import api from "../services/api";
+import { urlApi } from "../context/urlAPI";
+
 const Home = () => {
+    const { BASEURL } = useContext(urlApi);
     const [pharmacy, setPharmacy] = useState([]);
     const [admin, setAdmin] = useState([]);
     const { pharma, setPharma } = useContext(PharmaContext);
-
-    const getCredentials = async () => {
-        // try {
-        // const response = await fetch(`http://localhost:5000/dashboard`, {
-        //   method: "GET",
-        //   headers: { token: localStorage.token }
-        // });
-        // const pareRes = await response.json()
-        // setAdmin(pareRes)
-
-
-        //     const pharma = await fetch("http://localhost:5000/dashboard/get-pharma/"+ 4 )
-        //     const pData = await pharma.json();
-        //     setPharmacy(pData[0])
-
-        //   } catch (error) {
-        //     console.error(error.message)
-        //   }
-    }
-
-
+    const [thisyear, setThisyear] = useState()
+    const [lastMonth, setLastMonth] = useState([]);
     const [currentMonth, setCurrentMonth] = useState([]);
-
+    const [stockReport, setstockReport] = useState([]);
 
     const getData = async () => {
         var date = new Date();
         var month = date.getMonth() + 1;
+        var lastmonth = date.getMonth();
+        var year = date.getFullYear();
         if (pharma) {
             console.log(pharma);
             try {
-                const respo = await fetch("http://localhost:5000/sell/this-month-report/" + pharma.pharmacy_id)
+                const respo = await fetch(BASEURL + "/sell/month-report/" + pharma.pharmacy_id)
                 const jData = await respo.json();
-                console.log(jData);
+                const respo4 = await fetch(BASEURL + "/sell/this-year-report/" + pharma.pharmacy_id)
+                const jData4 = await respo4.json();
+                const respo1 = await fetch(BASEURL + "/medicine/get-medicine-stock-status/" + pharma.pharmacy_id)
+                const jData1 = await respo1.json();
+                setstockReport(jData1)
                 jData.map((value, index) => {
                     if (month == value.month) {
                         setCurrentMonth(value)
+                    }
+                    if (lastmonth == value.month) {
+                        setLastMonth(value)
+                    }
+                })
+                await jData4.map((value, index) => {
+                    if (year == value.year) {
+                        setThisyear(value)
                     }
                 })
 
@@ -50,7 +48,22 @@ const Home = () => {
             }
         }
     }
-
+    function nFormatter(num, digits) {
+        const lookup = [
+            { value: 1, symbol: "" },
+            { value: 1e3, symbol: "k" },
+            { value: 1e6, symbol: "M" },
+            { value: 1e9, symbol: "G" },
+            { value: 1e12, symbol: "T" },
+            { value: 1e15, symbol: "P" },
+            { value: 1e18, symbol: "E" }
+        ];
+        const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        var item = lookup.slice().reverse().find(function (item) {
+            return num >= item.value;
+        });
+        return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
+    }
     useEffect(() => {
         getData()
 
@@ -66,7 +79,7 @@ const Home = () => {
                                 <div class="rotate">
                                 </div>
                                 <h6 class="text-uppercase">Sales this month</h6>
-                                <h1 class="display-4">₱{currentMonth ? currentMonth.revenue : 0}</h1>
+                                <h1 class="display-4">₱{currentMonth ? nFormatter(currentMonth.revenue, 2) : 0}</h1>
                             </div>
                         </div>
                     </div>
@@ -76,7 +89,7 @@ const Home = () => {
                                 <div class="rotate">
                                 </div>
                                 <h6 class="text-uppercase">Sales last month</h6>
-                                <h1 class="display-4">155K</h1>
+                                <h1 class="display-4">₱{lastMonth ? nFormatter(lastMonth.revenue, 2) : 0}</h1>
                             </div>
                         </div>
                     </div>
@@ -86,7 +99,7 @@ const Home = () => {
                                 <div class="rotate">
                                 </div>
                                 <h6 class="text-uppercase">sales this year</h6>
-                                <h2 class="display-4">9M</h2>
+                                <h2 class="display-4">₱{thisyear ? nFormatter(thisyear.revenue, 2) : 0}</h2>
                             </div>
                         </div>
                     </div>
@@ -94,25 +107,18 @@ const Home = () => {
 
                 <div class="row mb-3 d-flex justify-content-center h-100">
                     <div class="col-xl-4 col-sm-6 py-2 ">
-                        <div class="card bg-black text-black h-100">
-                            <div class="card-body bg-white    ">
-                                <div class="rotate">
-                                    <i class="fa fa-user fa-4x"></i>
-                                </div>
+                        <div class="card  text-black h-100">
+                            <div class="card-body ">
+
                                 <h6 class="text-uppercase text-center">Items Status</h6>
-                                <ul class="list-group">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Cras justo odio
-                                        <span class="badge badge-primary badge-pill">14</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Dapibus ac facilisis in
-                                        <span class="badge badge-primary badge-pill">2</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Morbi leo risus
-                                        <span class="badge badge-primary badge-pill">1</span>
-                                    </li>
+                                <ul class="list-group ">
+                                    {stockReport.map((value, index) => (
+                                        <li class="list-group-item d-flex justify-content-between align-items-center fs-5">
+                                            {value.global_brand_name}
+                                            {value.med_qty == 0 ? <span class="badge rounded-pill bg-danger">Out of stock</span> : <span class="badge rounded-pill bg-warning text-dark">Low stock</span>}
+                                        </li>
+                                    ))}
+
                                 </ul>
 
                             </div>
@@ -124,13 +130,7 @@ const Home = () => {
                                 <div class="rotate">
                                 </div>
                                 <h6 class="text-uppercase text-center">Messages</h6>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">Crsdas justo odio</li>
-                                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                                    <li class="list-group-item">Morbi leo risus</li>
-                                    <li class="list-group-item">Porta ac consectetur ac</li>
-                                    <li class="list-group-item">Vestibulum at eros</li>
-                                </ul>
+                                <h6 class="text-center mt-5">Comming Soon!</h6>
                             </div>
                         </div>
                     </div>

@@ -2,16 +2,17 @@ import React, { useEffect, useState, Fragment } from "react";
 
 import AvailableProducts from "./AvailableProducts";
 import StockList from "./StockList";
+import Missing from "./Missing";
 import "./css/InventoryStyle.css"
 const Inventory = () => {
 
     return (
         <Fragment>
-            
+
             <div className="inv">
-           
+
                 <div class="d-flex justify-content-center h-100">
-                    
+
                     <div class="col-xl-11 col-sm-6 py-2 h-100 ">
 
                         <div class="card bg-black text-black h-100 ">
@@ -27,10 +28,14 @@ const Inventory = () => {
                                     <li class="nav-item tabb" role="presentation">
                                         <button class="nav-link tabb" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Stock List</button>
                                     </li>
+                                    <li class="nav-item tabb" role="presentation">
+                                        <button class="nav-link tabb" id="damaged-tab" data-bs-toggle="tab" data-bs-target="#damaged" type="button" role="tab" aria-controls="profile" aria-selected="false">Missing/Damaged/Expired Items</button>
+                                    </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"><AvailableProducts /></div>
                                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab"><StockList /></div>
+                                    <div class="tab-pane fade" id="damaged" role="tabpanel" aria-labelledby="profile-tab"><Missing /></div>
                                 </div>
 
                             </div>

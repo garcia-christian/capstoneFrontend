@@ -1,0 +1,43 @@
+.setabb .nav-link.active {
+    color: white;
+    background-color: #08E1E1;
+}
+
+.setabb .nav-link {
+    color: black;
+}
+
+.setabb {
+    font-size: 17px;
+    border: 1;
+    
+}
+
+.setabb :hover {
+    font-size: 17px;
+    color: #08E1E1;
+}
+.normtext{
+    color: black;
+}
+.settable{
+    height: 620px;
+}
+.heremedslink :hover{
+    color: #08E1E1 !important ;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.heremedslink{
+    color: black;
+
+}
+
+.eedtit :hover{
+    color: #08E1E1;
+    cursor: pointer;
+}
+.deleteee :hover{
+    color: red;
+    cursor: pointer;
+}

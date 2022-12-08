@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useRef } from "react";
+import { useContext } from "react";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { urlApi } from "../context/urlAPI";
 
 
 
@@ -13,6 +14,7 @@ import side from './images/sidepic.png'
 
 
 const Login = ({ setAuth }) => {
+    const { BASEURL } = useContext(urlApi);
     const refEmail = useRef(null);
     const refPassword = useRef(null);
     const [inputs, setInputs] = useState({
@@ -32,7 +34,7 @@ const Login = ({ setAuth }) => {
         try {
             const body = { email, password }
 
-            const response = await fetch(`http://localhost:5000/auth/login`, {
+            const response = await fetch(BASEURL + `/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)

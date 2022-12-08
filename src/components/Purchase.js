@@ -1,13 +1,19 @@
 import React, { useEffect, useState, Fragment, useContext, useRef } from "react";
 import { PharmaContext } from "../context/PharmaContext"
+import { urlApi } from "../context/urlAPI";
 import "./css/purchasestyle.css"
 import Form from "react-bootstrap/Form";
 import Select from 'react-select'
 import ConfimationModal from "./ConfimationModal";
 import AddMedicine from "./AddMedicine";
 import AddSupplier from "./AddSupplier";
+import EditSupplier from "./EditSupplier";
+import EditMedicine from "./EditMedicine";
 import toast, { Toaster } from 'react-hot-toast';
+
+
 const Purchase = () => {
+    const { BASEURL } = useContext(urlApi);
     const refSupp = useRef(null);
     const refMed = useRef(null);
     const refQty = useRef(null);
@@ -28,16 +34,48 @@ const Purchase = () => {
     const [retail_priceTotal, setRetail_priceTotal] = useState(0)
     const [listing_priceTotal, setListing_priceTotal] = useState(0)
     const [emptylist, setEmptylist] = useState(false)
+    const [toggle, setToggle] = useState(false)
+    const handleClose = () => setToggle(false);
+    const handleShow = () => setToggle(true);
+    const [toggle2, setToggle2] = useState(false)
+    const handleClose2 = () => setToggle2(false);
+    const handleShow2 = () => setToggle2(true);
+    const [editmed, setEditMed] = useState([]);
+    const [filteredMed, setFilteredMed] = useState([]);
+    const [searchMed, setSearchMed] = useState();
+    const [editSup, setEditSup] = useState([]);
+    const [filteredSup, setFilteredSup] = useState([]);
+    const [searchSup, setSearchSup] = useState();
+    const medFilter = (event) => {
+        const searchWord = event.target.value;
+        setSearchMed(searchWord);
+        const newFilter = meds.filter((value) => {
+            const word = value.global_brand_name
+            return word.toLowerCase().includes(searchWord.toLowerCase());
+        });
+        setFilteredMed(newFilter)
+    }
+    const supFilter = (event) => {
+        const searchWord = event.target.value;
+        setSearchSup(searchWord);
+        const newFilter = suppliers.filter((value) => {
+            const word = value.companyName
+            return word.toLowerCase().includes(searchWord.toLowerCase());
+        });
+        setFilteredSup(newFilter)
+    }
 
 
     const getData = async () => {
         try {
-            const respo = await fetch("http://localhost:5000/medicine/get-local-med/" + pharma.pharmacy_id)
+            const respo = await fetch(BASEURL + "/medicine/get-local-med/" + pharma.pharmacy_id)
             const jData = await respo.json();
-            const respo1 = await fetch("http://localhost:5000/purchase/get-suppliers/" + pharma.pharmacy_id)
+            const respo1 = await fetch(BASEURL + "/purchase/get-suppliers/" + pharma.pharmacy_id)
             const jData1 = await respo1.json();
             setMeds(jData)
+            setFilteredMed(jData)
             setSuppliers(jData1)
+            setFilteredSup(jData1)
         } catch (err) {
             console.error(err.message);
         }
@@ -61,7 +99,7 @@ const Purchase = () => {
                 total_price: listing_priceTotal,
 
             }
-            const purchaseInvoice = await fetch("http://localhost:5000/purchase/", {
+            const purchaseInvoice = await fetch(BASEURL + "/purchase/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(pInvoiceBody)
@@ -75,7 +113,7 @@ const Purchase = () => {
                     id: value.med_id,
                     qty: value.quantity
                 }
-                const store = await fetch("http://localhost:5000/medicine/add-qty", {
+                const store = await fetch(BASEURL + "/medicine/add-qty", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(storageBody)
@@ -92,7 +130,7 @@ const Purchase = () => {
                     date_exp: value.date_exp,
                     date_man: value.date_man,
                 }
-                const onInvoice = await fetch("http://localhost:5000/purchase/save", {
+                const onInvoice = await fetch(BASEURL + "/purchase/save", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(onInvoiceBody)
@@ -158,6 +196,14 @@ const Purchase = () => {
 
 
     }
+    const editSupControl = (sup) => {
+        setToggle2(true)
+        setEditSup(sup)
+    }
+    const editMedControl = (med) => {
+        setToggle(true)
+        setEditMed(med)
+    }
     const calculate = () => {
         let totalRet = 0;
         let totalList = 0;
@@ -221,6 +267,8 @@ const Purchase = () => {
                                             onChange={handelChangeSupp}
                                             getOptionLabel={e => e.companyName}
                                             getOptionValue={e => e.supplier_id}
+                                            menuPortalTarget={document.body}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                             options={suppliers}
                                             className="sply col-5" />
                                     </div>
@@ -239,6 +287,8 @@ const Purchase = () => {
                                                 getOptionLabel={e => e.global_brand_name + " | " + e.global_generic_name}
                                                 getOptionValue={e => e.med_id}
                                                 options={meds}
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                                 className="med" />
 
                                         </div>
@@ -326,7 +376,7 @@ const Purchase = () => {
                                 <div class="container">
                                     <div class="row">
                                         <ul class="list-unstyled">
-                                            <li class="text-muted mt-1"><span class="text-black">Purchase Invoice</span> #12345</li>
+                                            
                                             <li class="text-black mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
                                         </ul>
                                         <hr />
@@ -368,14 +418,22 @@ const Purchase = () => {
                                 <div class="rotate">
                                 </div>
                                 <div class="container">
-                                    <h6>Supplier List</h6>
+                                    <div class="row">
+                                        <div class="col-xl-5">
+                                            <h6 class="medlisttitle">Supplier List</h6>
+                                        </div>
+                                        <div class="col-xl-7">
+                                            <input class="form-control medsearch" placeholder="Search" value={searchSup} onChange={supFilter} />
+                                        </div>
+                                    </div>
+
                                     <hr />
                                     <div class="table-responsive tblimit">
                                         <table class="table table-hover  ">
 
                                             <tbody>
-                                                {suppliers.map((value, index) => (
-                                                    <tr >
+                                                {filteredSup.map((value, index) => (
+                                                    <tr onClick={(e) => editSupControl(value)} >
                                                         <td>{value.companyName}</td>
 
                                                     </tr>
@@ -394,14 +452,22 @@ const Purchase = () => {
                                 <div class="rotate">
                                 </div>
                                 <div class="container">
-                                    <h6>Medicine List</h6>
+
+                                    <div class="row">
+                                        <div class="col-xl-5">
+                                            <h6 class="medlisttitle">Medicine List</h6>
+                                        </div>
+                                        <div class="col-xl-7">
+                                            <input class="form-control medsearch" value={searchMed} onChange={medFilter} placeholder="Search" />
+                                        </div>
+                                    </div>
                                     <hr />
                                     <div class="table-responsive tblimit">
                                         <table class="table table-hover  ">
 
                                             <tbody>
-                                                {meds.map((value, index) => (
-                                                    <tr >
+                                                {filteredMed.map((value, index) => (
+                                                    <tr onClick={(e) => editMedControl(value)} >
                                                         <td>{value.global_brand_name}</td>
 
                                                     </tr>
@@ -417,8 +483,14 @@ const Purchase = () => {
 
                         </div>
                     </div>
-
-
+                    {
+                        toggle &&
+                        <EditMedicine toggle={toggle} close={handleClose} show={handleShow} med={editmed} refresher={getData} />
+                    }
+                    {
+                        toggle2 &&
+                        <EditSupplier toggle={toggle2} close={handleClose2} show={handleShow2} sup={editSup} refresher={getData} />
+                    }
 
                 </div>
 

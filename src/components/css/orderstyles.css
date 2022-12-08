@@ -1,0 +1,38 @@
+.ordr {
+    height: 85vh;
+    padding-top: 4rem;
+}
+
+.btn-primary,
+.btn-danger:active,
+.btn-danger:visited {
+    background-color: rgb(74, 228, 228) !important;
+    outline: auto;
+
+}
+
+.check {
+    color: rgb(74, 228, 228);
+    font-size: 20px;
+    margin-right: -5px;
+}
+
+.check :hover {
+    color: rgb(0, 255, 255);
+    font-size: 21px;
+}
+
+.exx {
+    color: rgb(228, 79, 74);
+    font-size: 20px;
+    margin-left: -1px;
+}
+
+.exx :hover {
+    color: rgb(255, 8, 0);
+    font-size: 21px;
+}
+
+.slh {
+    font-size: 20px;
+}

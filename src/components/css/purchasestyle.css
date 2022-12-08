@@ -32,8 +32,9 @@ select {
 
 }
 
+
 .tblimit{
-  max-height: 140px;
+  max-height: 135px;
   margin-top: -17px;
 }
 
@@ -45,3 +46,10 @@ select {
 .numnum {
   -moz-appearance: textfield;
 }          
+
+.medsearch{
+  height: 30px;
+}
+.medlisttitle{
+  margin-top: 5px;
+}

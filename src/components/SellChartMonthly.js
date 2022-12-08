@@ -1,6 +1,7 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2';
 import Chart from 'chart.js/auto'
+
 import {
     Chart as ChartJS,
     LineElement,
@@ -16,25 +17,18 @@ ChartJS.register(
     PointElement
 )
 
-const SellCharts = ({ lbl, dta, ldta }) => {
+const SellChartMonthly = ({ dta }) => {
+    console.log(dta);
     const data = {
-        labels: lbl,
+        labels: dta.map((value) => value.monthlong),
         datasets: [{
-            data: dta,
+            data: dta.map((value) => value.revenue),
             backgroundColor: 'transparent',
             borderColor: '#08E1E1',
-            pointBorderColor: 'transparent',
+            pointBorderColor: dta.map((value) => value.revenue == 0 ? 'transparent' : 'rgb(8,225,225,0.6)'),
             pointBorderWidth: 4,
-            tension: .2,
-            label: "This month"
-        }, {
-            data: ldta,
-            backgroundColor: 'transparent',
-            borderColor: '#FAA0A0',
-            pointBorderColor: 'transparent',
-            pointBorderWidth: 4,
-            tension: .2,
-            label: "Last month"
+            tension: 0,
+            label: 'Revenue'
         }
 
         ]
@@ -52,9 +46,9 @@ const SellCharts = ({ lbl, dta, ldta }) => {
             },
             y: {
                 min: 5,
-                max: (dta + ldta) / 2,
+                max: Math.max(dta.revenue) + 100,
                 ticks: {
-                    stepSize: 100,
+                    stepSize: 1000,
                     callback: (value) => value + ""
                 },
                 grid: {
@@ -70,7 +64,7 @@ const SellCharts = ({ lbl, dta, ldta }) => {
 
         <div style={{ width: '1200px', height: '500px' }} >
 
-            <Line data={data} options={options} title="ssdsdsd"></Line>
+            <Line data={data} options={options} ></Line>
 
         </div>
 
@@ -78,4 +72,4 @@ const SellCharts = ({ lbl, dta, ldta }) => {
     )
 }
 
-export default SellCharts
+export default SellChartMonthly

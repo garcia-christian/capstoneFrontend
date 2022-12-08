@@ -7,3 +7,22 @@
     max-height: 610px;
     overflow-y: scroll;
 }
+
+.stabb .nav-link.active {
+    color: #08E1E1;
+}
+
+.stabb .nav-link {
+    color: black;
+}
+
+.stabb {
+    font-size: 17px;
+    color: black;
+    table-layout: fixed
+}
+
+.stabb :hover {
+    font-size: 17px;
+    color: #08E1E1;
+}

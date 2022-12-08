@@ -3,18 +3,27 @@ import { PharmaContext } from "../context/PharmaContext"
 import AsyncSelect from 'react-select/async'
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
+import { urlApi } from "../context/urlAPI";
+
+
+
+
+
+
 const AddMedicine = ({ getData }) => {
+    const { BASEURL } = useContext(urlApi);
     const refMed = useRef(null);
     const refPr = useRef(null);
     const { pharma, setPharma } = useContext(PharmaContext);
     const [notes, setNotes] = useState('');
     const [storage, setStorage] = useState('');
     const [price, setPrice] = useState(0);
+    const [threshold, setThreshold] = useState(0);
     const [inputValue, setinputValue] = useState('');
     const [selectedValue, setSelectedValue] = useState(null)
     const [href, setHref] = useState('');
     const fetchData = () => {
-        return fetch("http://localhost:5000/medicine/get-global-med/" + inputValue).then(res => {
+        return fetch(BASEURL + "/medicine/get-global-med/" + inputValue).then(res => {
 
             return res.json()
         })
@@ -41,9 +50,9 @@ const AddMedicine = ({ getData }) => {
                 price: price,
                 storage: storage,
                 notes: notes,
-                med_qty: 0
+                threshold: threshold
             }
-            const addlocalMed = await fetch("http://localhost:5000/medicine/add-local", {
+            const addlocalMed = await fetch(BASEURL + "/medicine/add-local", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(medbody)
@@ -55,6 +64,7 @@ const AddMedicine = ({ getData }) => {
                 getData()
                 setNotes('')
                 setStorage('')
+                setThreshold('')
                 setPrice(0)
                 setinputValue('')
                 setSelectedValue(null)
@@ -65,6 +75,7 @@ const AddMedicine = ({ getData }) => {
                 getData()
                 setNotes('')
                 setStorage('')
+                setThreshold('')
                 setPrice(0)
                 setinputValue('')
                 setSelectedValue(null)
@@ -100,6 +111,9 @@ const AddMedicine = ({ getData }) => {
         }
         else if (!price) {
             setHref('')
+        }
+        else if (!threshold) {
+            setHref('')
         } else {
             setHref('modal')
         }
@@ -114,10 +128,10 @@ const AddMedicine = ({ getData }) => {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <h6 class="mt-2">Global Medicine</h6>
+                            <h6 class="mt-2">Medicine</h6>
 
                             <div class="form-row ">
-                                <div class="col-8">
+                                <div class="col-12">
                                     <AsyncSelect
                                         ref={refMed}
                                         cacheOptions
@@ -141,8 +155,14 @@ const AddMedicine = ({ getData }) => {
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputGroup-sizing-default">₱</span>
                                         </div>
-                                        <input type="text" ref={refPr} value={price} onChange={(e) => setPrice(e.target.value)} placeholder='Set med Price' class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
+                                        <input type="number" pattern="[0-9]*" ref={refPr} value={price} onChange={(e) => setPrice(e.target.value)} placeholder='Set med Price' class="form-control numnum" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
                                     </div>
+                                </div>
+                            </div>
+                            <h6 class="mt-3">Quantity Warning Threshold</h6>
+                            <div class="form-row mt-2 ">
+                                <div class="col-6">
+                                    <input type="number" pattern="[0-9]*" value={threshold} onChange={(e) => setThreshold(e.target.value)} class="form-control numnum" placeholder="Threshold" />
                                 </div>
                             </div>
                             <h6 class="mt-3">Storage Notes</h6>

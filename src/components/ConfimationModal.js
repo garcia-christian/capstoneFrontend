@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from 'react-hot-toast';
+
 const ConfimationModal = ({ title, descrip, button, buttonsave, method, btnstyle, Purchased }) => {
     const [href, setHref] = useState('')
     const checkBtn = () => {

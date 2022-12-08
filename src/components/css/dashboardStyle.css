@@ -23,7 +23,15 @@
     width: 22%;
 }
 
+.cls {
+    width: 10dp;
+    height: 10dp;
 
+}
+
+.cls :hover {
+    color: black;
+}
 
 *,
 ::before,
@@ -33,6 +41,9 @@
 
 
 
+.toast {
+    opacity: 1;
+}
 
 
 .l-navbar {
@@ -48,14 +59,16 @@
 }
 
 
-a{
+a {
     text-decoration: none;
     color: var(--first-color-light);
 }
-a:hover{
+
+a:hover {
     text-decoration: none;
     color: var(--white-color)
 }
+
 .nav_logo,
 .nav_link {
     display: grid;
@@ -105,6 +118,9 @@ a:hover{
     color: var(--white-color)
 }
 
+.hrmpng {
+    width: 100px;
+}
 
 
 .username {
@@ -151,6 +167,32 @@ a:hover{
 
 .location {
     padding-left: 5rem;
+}
+
+.bll {
+    margin-right: 10px;
+}
+
+.acc {
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.ltr {
+    font-size: 15px;
+    margin-top: 11px;
+
+}
+
+.ltr:hover {
+    color: red !important;
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+.btnns {
+    size: 10px;
+    font-size: 10px;
 }
 
 @media screen and (min-width: 768px) {

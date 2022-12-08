@@ -2,7 +2,10 @@ import React, { Fragment, useEffect, useState, useContext } from "react";
 import { PharmaContext } from "../context/PharmaContext"
 import toast, { Toaster } from 'react-hot-toast';
 import "./css/modal.css"
+import { urlApi } from "../context/urlAPI";
+
 const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
+    const { BASEURL } = useContext(urlApi);
     const [cash, setCash] = useState('')
     const [change, setChange] = useState(0)
     const [href, setHref] = useState('')
@@ -39,7 +42,7 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
                 change: change,
                 payment_type: 1
             }
-            const respo = await fetch("http://localhost:5000/sell", {
+            const respo = await fetch(BASEURL + "/sell", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)
@@ -54,7 +57,7 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
                     med: value[0].med_id
                 }
 
-                const respo = await fetch("http://localhost:5000/sell/save", {
+                const respo = await fetch(BASEURL + "/sell/save", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(body)
@@ -66,7 +69,7 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
                     qty: value.quantity,
                     pharmacy: pharma.pharmacy_id
                 }
-                const store = await fetch("http://localhost:5000/medicine/deduct-qty", {
+                const store = await fetch(BASEURL + "/medicine/deduct-qty", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(storageBody)
@@ -148,8 +151,8 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
                             <div class="modal-body">
                                 <div class="row">
                                     <ul class="list-unstyled">
-                                        <li class="text-muted mt-1"><span class="text-black">Invoice</span> #12345</li>
-                                        <li class="text-black mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
+                                  
+                                        <li class="text-muted mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
                                     </ul>
                                     <hr class='totalline' />
                                     <div class="col-xl-10">
@@ -180,7 +183,7 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroup-sizing-default">₱</span>
                                     </div>
-                                    <input onChange={(e) => setCash(e.target.value)} value={cash} type="text" placeholder='Please Enter Exact Amount' class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
+                                    <input onChange={(e) => setCash(e.target.value)} value={cash} type="number" pattern="[0-9]*" placeholder='Please Enter Exact Amount' class="form-control numnum" aria-label="Default" aria-describedby="inputGroup-sizing-default" />
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -203,8 +206,8 @@ const Sellmodal = ({ Subtotal, Total, discount, Cart, allClear, Reload }) => {
                             <div class="modal-body">
                                 <div class="row">
                                     <ul class="list-unstyled">
-                                        <li class="text-muted mt-1"><span class="text-black">Invoice</span> #12345</li>
-                                        <li class="text-black mt-1">April 17 2021</li>
+
+                                        <li class="text-black mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
                                     </ul>
                                     {Cart.map((value, index) => (
                                         <>
