@@ -233,7 +233,7 @@ const Purchase = () => {
         } else {
             setEmptylist(true)
         }
-    }, [purhcased])
+    }, [purhcased, meds])
 
 
     useEffect(() => {
@@ -376,7 +376,7 @@ const Purchase = () => {
                                 <div class="container">
                                     <div class="row">
                                         <ul class="list-unstyled">
-                                            
+
                                             <li class="text-black mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
                                         </ul>
                                         <hr />
@@ -444,7 +444,7 @@ const Purchase = () => {
                                 </div>
 
                             </div>
-                            <AddSupplier />
+                            <AddSupplier getData={getData} />
                         </div>
 
                         <div class="card bg-black text-black h-100 mt-4">
