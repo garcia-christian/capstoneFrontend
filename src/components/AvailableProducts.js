@@ -39,7 +39,7 @@ const AvailableProducts = () => {
                         <th>Brand</th>
                         <th>Available Quantity</th>
                         <th>Price</th>
-                        <th>Batches Available</th>
+                        <th>Batches</th>
                         <th>Notes</th>
                     </tr>
                 </thead>
