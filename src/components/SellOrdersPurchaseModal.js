@@ -72,7 +72,7 @@ const SellOrdersPurchaseModal = ({ toggle, close, show, order_id, cus_id, finish
 
             })
         } catch (error) {
-            console.log(errror.err);
+            console.log(error.err);
         }
 
     }
