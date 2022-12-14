@@ -53,8 +53,32 @@ const SellOrdersPurchaseModal = ({ toggle, close, show, order_id, cus_id, finish
             toast.error('Please Enter Cash Ammount')
         }
     }
+    const saveCustomerMeds = async () => {
+
+        try {
+            await prods.map(async (value, index) => {
+                const body = {
+                    customer: order.customer_id,
+                    local_med: value.med_id,
+                    qty: value.quantity
+                }
+
+                const respo = await fetch(BASEURL + "/orders/save-customer-meds", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                });
+                const res = await respo.json();
+
+            })
+        } catch (error) {
+            console.log(errror.err);
+        }
+
+    }
     const onCheck = () => {
         finished(order_id, cus_id);
+        saveCustomerMeds();
         onSubmit();
         close();
     }

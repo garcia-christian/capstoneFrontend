@@ -25,7 +25,7 @@ const Dashboard = ({ setAuth }) => {
   const [settings, setSettings] = useState(false);
 
 
-
+ 
   const { socket, setSocket } = useContext(SocketContext);
 
   //console.log(statusU)
