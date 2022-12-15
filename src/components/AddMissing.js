@@ -88,7 +88,7 @@ const AddMissing = ({ toggle, close, refresh }) => {
         <Fragment>
             <Modal show={toggle}  >
                 <Modal.Header >
-                    <Modal.Title>Reprot Missing/Damaged/Expired Product</Modal.Title>
+                    <Modal.Title>Report Missing/Damaged/Expired Product</Modal.Title>
                     <CloseButton onClick={close} />
                 </Modal.Header>
                 <Modal.Body>

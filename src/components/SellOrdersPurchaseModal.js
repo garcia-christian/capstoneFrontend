@@ -71,6 +71,7 @@ const SellOrdersPurchaseModal = ({ toggle, close, show, order_id, cus_id, finish
                 const res = await respo.json();
 
             })
+            toast.success("cmed")
         } catch (error) {
             console.log(error.err);
         }
