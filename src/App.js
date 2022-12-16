@@ -18,7 +18,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import api from "./services/api";
 function App() {
   const [pharma, setPharma] = useState(null);
-  const [BASEURL, setBASEURL] = useState('https://heremedsapi.up.railway.app');
+  const [BASEURL, setBASEURL] = useState('https://capstone-heremi.up.railway.app');
   const [socket, setSocket] = useState(null)
 
   const pharmacy = useMemo(() => ({ pharma, setPharma }), [pharma, setPharma]);
