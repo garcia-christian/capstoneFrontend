@@ -6,7 +6,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Sellmodal from "./Sellmodal";
 import { urlApi } from "../context/urlAPI";
-
+import Form from 'react-bootstrap/Form';
 const Pos = () => {
     const { BASEURL } = useContext(urlApi);
     const { pharma, setPharma } = useContext(PharmaContext);
@@ -20,6 +20,14 @@ const Pos = () => {
     const [Subtotal, setSubtotal] = useState(0)
     const [Total, setTotal] = useState(0)
 
+    const cashFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'PHP',
+
+        // These options are needed to round to whole numbers if that's what you want.
+        //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    });
 
     const allClear = () => {
         getData();
@@ -36,6 +44,7 @@ const Pos = () => {
 
     const calculator = () => {
         let totalinit = 0;
+        let totaldiscounted = 0;
         console.log(cart.length);
         cart.map((value, key) => {
 
@@ -43,18 +52,37 @@ const Pos = () => {
 
 
         })
-        setSubtotal(totalinit)
-        let total = 0
-        total = Subtotal - (Subtotal * (discount.length == 0 ? 0 : (discount[0].discount_cost)))
-        setTotal(total)
+        if (discount.length !== 0) {//has discount
+            cart.map((value, key) => {
+                if (value.disc) {
+                    totaldiscounted = totaldiscounted + value[0].med_price * value.quantity
+                }
+            })
+            let discountinit = 0
+            discountinit = totalinit - totaldiscounted;
+            let total = 0
+            total = totaldiscounted - (totaldiscounted * (discount.length == 0 ? 0 : (discount[0].discount_cost))) + discountinit
+            setSubtotal(totalinit)
+            setTotal(total)
+            console.log(totalinit);
+        } else {
+
+            setSubtotal(totalinit)
+            let total = 0
+            total = Subtotal 
+            setTotal(total)
+
+
+        }
+
     }
 
 
     const getData = async () => {
         try {
-            const respo = await fetch(BASEURL+"/medicine/get-local-med/" + pharma.pharmacy_id)
+            const respo = await fetch(BASEURL + "/medicine/get-local-med/" + pharma.pharmacy_id)
             const jData = await respo.json();
-            const respo1 = await fetch(BASEURL+"/sell/discount/" + pharma.pharmacy_id)
+            const respo1 = await fetch(BASEURL + "/sell/discount/" + pharma.pharmacy_id)
             const jData1 = await respo1.json();
             setMeds(jData)
             setDiscounts(jData1)
@@ -82,6 +110,7 @@ const Pos = () => {
 
             if (qty === 1) {
                 res.quantity = qty
+                res.disc = false
                 const newData = [...cart, res]
                 setCart(newData)
 
@@ -102,7 +131,7 @@ const Pos = () => {
             toast.error('Not Available')
         }
 
-        console.log(cart.length);
+        console.log(cart);
 
 
     }
@@ -151,6 +180,16 @@ const Pos = () => {
             setCart(newData)
 
         }
+
+
+    };
+    const onDChange = (e, value) => {
+        const newData = [...cart]
+        console.log(value);
+        newData[e].disc = value
+        setCart(newData)
+
+
 
 
     };
@@ -204,7 +243,7 @@ const Pos = () => {
                                                             <tr key={index} onClick={() => selectData(value.med_id)} >
                                                                 <td>{value.global_brand_name}</td>
                                                                 <td>{value.global_generic_name}</td>
-                                                                <td>₱{value.med_price}</td>
+                                                                <td>{cashFormatter.format(value.med_price)}</td>
                                                                 <td>{value.med_qty} pcs</td>
                                                             </tr>
                                                         );
@@ -231,6 +270,7 @@ const Pos = () => {
                                                 <th>Price</th>
                                                 <th>Quantity</th>
                                                 <th>Delete</th>
+                                                {discount.length != 0 && <th>Discount Eligibility</th>}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -243,9 +283,18 @@ const Pos = () => {
 
                                                     </td>
                                                     <td>{value[0].med_cat_desc}</td>
-                                                    <td>{value[0].med_price}</td>
+                                                    <td>{cashFormatter.format(value[0].med_price)}</td>
                                                     <td className="num" > <input type="number" step="1" value={value.quantity} onChange={(e) => onQChange(index, e.target.value)} name="quantity" class="quantity-field border-0 num w-25" /></td>
                                                     <td className="del" ><h6 class="text-danger" onClick={() => deleteCart(index)}>Delete</h6></td>
+                                                    {discount != 0 && <td> <Form.Check
+                                                        inline
+                                                        checked={value.disc}
+                                                        onChange={(e) => onDChange(index, e.target.checked)}
+                                                        label="Discounted"
+                                                        name="group1"
+                                                        type='checkbox'
+                                                        id={`inline-checkbox-2`}
+                                                    /></td>}
                                                 </tr>
 
                                             )
@@ -269,7 +318,7 @@ const Pos = () => {
 
                                     <div class="row">
                                         <ul class="list-unstyled">
-                                            
+
                                             <li class="text-black mt-1">{new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })}</li>
                                         </ul>
                                         <hr />
@@ -277,16 +326,10 @@ const Pos = () => {
                                             <p>Sub Total</p>
                                         </div>
                                         <div class="col-xl-2">
-                                            <p class="float-end">₱{Subtotal}
+                                            <p class="float-end">{cashFormatter.format(Subtotal)}
                                             </p>
                                         </div>
-                                        <div class="col-xl-10">
-                                            <p>Sub Total</p>
-                                        </div>
-                                        <div class="col-xl-2">
-                                            <p class="float-end">₱{Subtotal}
-                                            </p>
-                                        </div>
+
 
                                     </div>
                                     <div class="row">
@@ -315,7 +358,7 @@ const Pos = () => {
                                             <p>Total</p>
                                         </div>
                                         <div class="col-xl-2">
-                                            <p class="float-end fw-bold">₱{Total}
+                                            <p class="float-end fw-bold">{cashFormatter.format(Total)}
                                             </p>
                                         </div>
                                         <div class="col-xl-10">

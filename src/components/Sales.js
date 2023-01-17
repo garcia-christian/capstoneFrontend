@@ -25,18 +25,49 @@ const Sales = () => {
     const [key, setKey] = useState('home');
     const [barData, setbarData] = useState([]);
     const [monthlyData, setmonthlyData] = useState([]);
+    const [monthlyGraphData, setmonthlyGraphData] = useState([]);
+    const [selectedMY, setSelectedMY] = useState(null)
+    const [lastMY, setLastMY] = useState(null)
+    const [selectedMY1, setSelectedMY1] = useState(null)
+    const [lastMY1, setLastMY1] = useState(null)
+    const [thisy, setThisy] = useState("")
+    const [lasty, setLasty] = useState("")
+
+    const setSMY1 = (value) => {
+        setSelectedMY1(value)
+    }
+    const setLMY1 = (value) => {
+        setLastMY1(value)
+    }
+    const setMGD = (value) => {
+        setmonthlyGraphData(value)
+
+    }
+    const setSMY = (value) => {
+        setSelectedMY(value)
+
+        setThisy(value.monthword)
+    }
+    const setLMY = (value) => {
+        setLastMY(value)
+        if (value) {
+            setLasty(value.monthword)
+        } else {
+            setLasty("No Data")
+        }
+    }
     const getDaysInCurrentMonth = () => {
         const date = new Date();
 
         return new Date(
-            date.getFullYear(),
-            date.getMonth() + 1,
+            selectedMY.year,
+            selectedMY.month,
             0
         ).getDate();
     }
     const loadData = async () => {
         try {
-            const respo = await fetch(BASEURL + "/sell/get-sales/" + pharma.pharmacy_id)
+            const respo = await fetch(BASEURL + "/sell/get-sales/" + pharma.pharmacy_id + "/" + 0 + "/" + 0)
             const jData = await respo.json();
             const respo1 = await fetch(BASEURL + "/sell/get-daily-sales/" + pharma.pharmacy_id)
             const jData1 = await respo1.json();
@@ -44,7 +75,7 @@ const Sales = () => {
             const jData3 = await respo3.json();
             const respo4 = await fetch(BASEURL + "/sell/this-year-report/" + pharma.pharmacy_id)
             const jData4 = await respo4.json();
-            const respo5 = await fetch(BASEURL + "/sell/get-sales-meds/" + pharma.pharmacy_id)
+            const respo5 = await fetch(BASEURL + "/sell/get-sales-meds/" + pharma.pharmacy_id + "/" + selectedMY1.year + "/" + selectedMY1.month)
             const jData5 = await respo5.json();
             setmonthlyData(jData3)
             setbarData(jData5)
@@ -54,20 +85,22 @@ const Sales = () => {
             const Ldta = []
             var date = new Date();
             var dy = date.getDate();
-            var currmonth = date.getMonth() + 1;
-            var lastmonth = date.getMonth();
+            var gencurrmonth = date.getMonth() + 1;
+            var genlastmonth = date.getMonth();
+            var currmonth = selectedMY.month;
+            var lastmonth = (selectedMY.month === 1 ? 12 : selectedMY.month - 1);
             var year = date.getFullYear();
             jData3.map((value, index) => {
-                if (currmonth == value.month) {
+                if (gencurrmonth == value.month) {
                     setCurrentMonth(value)
                 }
-                if (lastmonth == value.month) {
+                if (genlastmonth == value.month) {
                     setLastMonth(value)
                 }
             })
 
             await jData1.map((value, index) => {
-                if (dy == value.day && value.month == currmonth) {
+                if (dy == value.day && value.month == gencurrmonth) {
                     setToday(value)
                 }
             })
@@ -133,7 +166,7 @@ const Sales = () => {
         if (pharma) {
             loadData()
         }
-    }, [pharma])
+    }, [pharma, selectedMY, selectedMY1])
     return (
         <Fragment>
             <div className="sales">
@@ -189,9 +222,9 @@ const Sales = () => {
                                 </div>
 
                                 <div class="row d-flex justify-content-center mt-5 hlimit">
-                                    {key == "monthly" && <SellChartMonthly dta={monthlyData} />}
+                                    {key == "monthly" && <SellChartMonthly dta={monthlyGraphData} />}
                                     {key == "meds" && <SellChartMeds dta={barData} />}
-                                    {key == "home" && <SellCharts lbl={labels} dta={cdata} ldta={ldata} />}
+                                    {key == "home" && <SellCharts lbl={labels} dta={cdata} ldta={ldata} smy={thisy} lmy={lasty} />}
                                     <div class="row mb-3 d-flex justify-content-center">
                                         <Tabs
                                             id="controlled-tab-example"
@@ -199,14 +232,14 @@ const Sales = () => {
                                             onSelect={(k) => setKey(k)}
                                             className="mb-3 stabb"
                                         >
-                                            <Tab eventKey="home" title="All">
-                                                <SalesAll />
+                                            <Tab eventKey="home" title="Sales">
+                                                <SalesAll setSMY={setSMY} setLMY={setLMY} />
                                             </Tab>
                                             <Tab eventKey="meds" title="Medicine Sales">
-                                                <SalesMeds />
+                                                <SalesMeds setSMY={setSMY1} setLMY={setLMY1} />
                                             </Tab>
                                             <Tab eventKey="monthly" title="Monthly Report">
-                                                <SalesMonthly />
+                                                <SalesMonthly setMGD={setMGD} />
                                             </Tab>
                                         </Tabs>
                                     </div>

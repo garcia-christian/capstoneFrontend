@@ -16,7 +16,8 @@ ChartJS.register(
     PointElement
 )
 
-const SellCharts = ({ lbl, dta, ldta }) => {
+const SellCharts = ({ lbl, dta, ldta, smy, lmy }) => {
+    console.log(smy);
     const data = {
         labels: lbl,
         datasets: [{
@@ -26,7 +27,7 @@ const SellCharts = ({ lbl, dta, ldta }) => {
             pointBorderColor: 'transparent',
             pointBorderWidth: 4,
             tension: .2,
-            label: "This month"
+            label: smy
         }, {
             data: ldta,
             backgroundColor: 'transparent',
@@ -34,7 +35,7 @@ const SellCharts = ({ lbl, dta, ldta }) => {
             pointBorderColor: 'transparent',
             pointBorderWidth: 4,
             tension: .2,
-            label: "Last month"
+            label: lmy
         }
 
         ]

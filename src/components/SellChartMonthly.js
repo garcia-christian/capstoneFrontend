@@ -46,9 +46,9 @@ const SellChartMonthly = ({ dta }) => {
             },
             y: {
                 min: 5,
-                max: Math.max(dta.revenue) + 100,
+                max: Math.max(dta.revenue),
                 ticks: {
-                    stepSize: 1000,
+                    stepSize: Math.max(dta.revenue) / 2,
                     callback: (value) => value + ""
                 },
                 grid: {
