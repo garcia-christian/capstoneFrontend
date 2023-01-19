@@ -14,7 +14,7 @@ import { SocketContext } from "./context/SocketContext"
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
-
+// New Device Push
 import api from "./services/api";
 function App() {
   const [pharma, setPharma] = useState(null);
