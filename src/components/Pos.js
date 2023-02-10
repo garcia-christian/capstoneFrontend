@@ -241,10 +241,10 @@ const Pos = () => {
                                                     {filteredData.slice(0, 15).map((value, index) => {
                                                         return (
                                                             <tr key={index} onClick={() => selectData(value.med_id)} >
-                                                                <td>{value.global_brand_name}</td>
-                                                                <td>{value.global_generic_name}</td>
-                                                                <td>{cashFormatter.format(value.med_price)}</td>
-                                                                <td>{value.med_qty} pcs</td>
+                                                                <td className="w-25">{value.global_brand_name}</td>
+                                                                <td className="w-50">{value.global_generic_name}</td>
+                                                                <td className="text-right">{cashFormatter.format(value.med_price)}</td>
+                                                                <td className="w-25">{value.med_qty} pcs</td>
                                                             </tr>
                                                         );
                                                     })}
@@ -265,10 +265,10 @@ const Pos = () => {
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Product name</th>
-                                                <th>Category</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
+                                                <th className="w-25">Product name</th>
+                                                <th className="w-25">Category</th>
+                                                <th className="text-right">Price</th>
+                                                <th className="text-center">Quantity</th>
                                                 <th>Delete</th>
                                                 {discount.length != 0 && <th>Discount Eligibility</th>}
                                             </tr>
@@ -283,8 +283,8 @@ const Pos = () => {
 
                                                     </td>
                                                     <td>{value[0].med_cat_desc}</td>
-                                                    <td>{cashFormatter.format(value[0].med_price)}</td>
-                                                    <td className="num" > <input type="number" step="1" value={value.quantity} onChange={(e) => onQChange(index, e.target.value)} name="quantity" class="quantity-field border-0 num w-25" /></td>
+                                                    <td className="text-right">{cashFormatter.format(value[0].med_price)}</td>
+                                                    <td className="num w-25" > <input type="number" step="1" value={value.quantity} onChange={(e) => onQChange(index, e.target.value)} name="quantity" class="quantity-field border-0 num w-25" /></td>
                                                     <td className="del" ><h6 class="text-danger" onClick={() => deleteCart(index)}>Delete</h6></td>
                                                     {discount != 0 && <td> <Form.Check
                                                         inline

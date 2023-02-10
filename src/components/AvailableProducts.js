@@ -35,12 +35,12 @@ const AvailableProducts = () => {
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Product name</th>
-                        <th>Brand</th>
-                        <th>Available Quantity</th>
-                        <th>Price</th>
+                        <th className="w-50">Product name</th>
+                        <th className="w-25">Brand</th>
+                        <th className="w-auto">Available Quantity</th>
+                        <th className="text-end">Price</th>
                         <th>Batches</th>
-                        <th>Notes</th>
+                        <th className="w-25">Notes</th>
                     </tr>
                 </thead>
                 <tbody >
@@ -56,7 +56,7 @@ const AvailableProducts = () => {
                             <td>
                                 {value.total}
                             </td>
-                            <td>
+                            <td className="text-end col-1">
                                 {cashFormatter.format(value.med_price)}
                             </td>
                             <td>

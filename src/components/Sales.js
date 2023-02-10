@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+    import React, { Fragment, useEffect, useState, useContext } from "react";
 
 import { PharmaContext } from "../context/PharmaContext"
 import "./css/salesStyle.css"

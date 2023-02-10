@@ -36,9 +36,9 @@ const StockList = ({ pharmacy }) => {
                 <thead>
                     <tr>
                         <th>Batch #</th>
-                        <th>Product Name</th>
-                        <th>Date Manufactured</th>
-                        <th>Date Expired</th>
+                        <th className="w-50">Product Name</th>
+                        <th className="w-25">Date Manufactured</th>
+                        <th className="w-25">Date Expired</th>
                         <th>Listed Quantity</th>
                         <th>Listing Price</th>
                     </tr>
@@ -61,10 +61,10 @@ const StockList = ({ pharmacy }) => {
                             <td>
                                 {new Date(value.expiry_date).toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })}
                             </td>
-                            <td>
+                            <td >
                                 {value.listedqty}
                             </td>
-                            <td>{cashFormatter.format(value.listing_price)}</td>
+                            <td className="text-end" >{cashFormatter.format(value.listing_price)}</td>
                         </tr>
                     ))}
 
