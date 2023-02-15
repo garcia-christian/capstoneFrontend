@@ -23,10 +23,10 @@ const SellChartMeds = ({ dta }) => {
         labels: dta.map((value) => value.global_brand_name),
         datasets: [{
             axis: 'y',
-            data: dta.map((value) => value.revenue),
+            data: dta.map((value) => value.purchased),
             backgroundColor: 'rgb(8,225,225,0.5)',
             borderSkipped: false,
-            label: 'Revenue',
+            label: 'Items Sold',
             barPercentage: 0.5,
             barThickness: 15,
             fill: false,
@@ -44,9 +44,9 @@ const SellChartMeds = ({ dta }) => {
         scales: {
             x: {
                 min: 0,
-                max: Math.max(dta.revenue),
+                max: Math.max(dta.purchased),
                 ticks: {
-                    stepSize: Math.max(dta.revenue)/2,
+                    stepSize: Math.max(dta.purchased) / 2,
                     callback: (value) => value + ""
                 },
                 grid: {

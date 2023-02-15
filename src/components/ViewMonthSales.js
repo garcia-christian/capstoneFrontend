@@ -16,7 +16,7 @@ const ViewMonthSales = ({ toggle, close, load, year, month }) => {
     const [mon, setMon] = useState(null)
     const loadData = async () => {
 
-        const respo = await fetch(BASEURL + "/sell/get-sales/" + pharma.pharmacy_id + "/" + year.year + "/" + month.month)
+        const respo = await fetch(BASEURL + "/sell/get-msales/" + pharma.pharmacy_id + "/" + year.year + "/" + month.month)
         const jData = await respo.json();
         setData(jData)
         if (month) {
@@ -27,6 +27,7 @@ const ViewMonthSales = ({ toggle, close, load, year, month }) => {
     useEffect(() => {
         if (pharma && year && month) {
             loadData()
+            console.log(year.year);
         }
     }, [toggle, year, month])
 
